@@ -5,9 +5,28 @@ option go_package = "github.com/go-kratos/kratos-layout/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 
+enum Environment {
+  NONE = 0;
+  DEV = 1;
+  PRE = 2;
+  PROD = 3;
+}
+
 message Bootstrap {
-  Server server = 1;
-  Data data = 2;
+  Environment env = 1;
+  Server server = 2;
+  Registry registry = 3;
+  Otel otel = 4;
+  Log log = 5;
+  Data data = 6;
+}
+
+message Log {
+  string filepath = 1;
+  int32 max_size = 2;
+  int32 max_backups = 3;
+  int32 level = 4;
+  int32 max_age = 5;
 }
 
 message Server {
@@ -21,21 +40,50 @@ message Server {
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
+  message Pprof {
+    string addr = 1;
+  }
   HTTP http = 1;
   GRPC grpc = 2;
+  Pprof pprof = 3;
+}
+
+message Registry {
+  repeated string endpoint = 1;
+}
+
+message Otel {
+  message Trace {
+    string endpoint = 1;
+    bool insecure = 2;
+  }
+  message Metric {
+    bool enable_exemplar = 1;
+  }
+  Trace trace = 1;
+  Metric metric = 2;
 }
 
 message Data {
   message Database {
     string driver = 1;
     string source = 2;
+    int32 max_open_conn = 3;
+    int32 max_idle_conn = 4;
+    google.protobuf.Duration conn_max_lifetime = 5;
   }
   message Redis {
-    string network = 1;
-    string addr = 2;
+    string addr = 1;
+    string password = 2;
     google.protobuf.Duration read_timeout = 3;
     google.protobuf.Duration write_timeout = 4;
+    repeated int32 shards = 5;
   }
-  Database database = 1;
-  Redis redis = 2;
+  message Kafka {
+    repeated string broker_list = 1;
+    string group_id = 2;
+  }
+  map<string, Database> database = 1;
+  map<string, Redis> redis = 2;
+  Kafka kafka = 3;
 }

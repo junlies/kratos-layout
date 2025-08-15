@@ -2,6 +2,8 @@ package data
 
 import (
 	"github.com/go-kratos/kratos-layout/internal/conf"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
@@ -12,13 +14,28 @@ var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
 
 // Data .
 type Data struct {
-	// TODO wrapped database client
+	db  DbClient
+	rdb RedisClient
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+func NewData(c *conf.Bootstrap, provider trace.TracerProvider, meterProvider metric.MeterProvider, logger log.Logger) (*Data, func(), error) {
+	dbClient, dbClean, err := newDB(c, provider)
+	if err != nil {
+		panic(err)
+	}
+	redisClient, rdbClean, err := newRedis(c, provider, meterProvider)
+	if err != nil {
+		panic(err)
+	}
+
 	cleanup := func() {
+		dbClean()
+		rdbClean()
 		log.NewHelper(logger).Info("closing the data resources")
 	}
-	return &Data{}, cleanup, nil
+	return &Data{
+		db:  dbClient,
+		rdb: redisClient,
+	}, cleanup, nil
 }

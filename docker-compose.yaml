@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  etcd:
+    image: bitnami/etcd:3
+    restart: unless-stopped
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ENABLE_V2=true
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+    ports:
+      - "42379:2379"
+  jaeger:
+    image: jaegertracing/all-in-one
+    restart: unless-stopped
+    ports:
+      - "16686:16686"
+      - "44317:4317"
+      - "9411:9411"
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_SERVER_URL=http://127.0.0.1:9090
+  mysql:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - "43306:3306"
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "46379:6379"
+    command: [ "redis-server", "--requirepass", "123456" ]
+  helloworld:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "48000:8000"
+      - "49000:9000"
+      - "46060:6060"
+    volumes:
+      - ./configs:/app/configs
+    depends_on:
+      - etcd
+      - jaeger
+      - mysql
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 1G
+        reservations:
+          cpus: "1.0"
+          memory: 512M

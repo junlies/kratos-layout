@@ -7,11 +7,14 @@
 package main
 
 import (
+	"context"
 	"github.com/go-kratos/kratos-layout/internal/biz"
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos-layout/internal/data"
+	"github.com/go-kratos/kratos-layout/internal/registry"
 	"github.com/go-kratos/kratos-layout/internal/server"
 	"github.com/go-kratos/kratos-layout/internal/service"
+	"github.com/go-kratos/kratos-layout/internal/trace"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -23,17 +26,38 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+func wireApp(contextContext context.Context, string2 string, bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
+	tracerProvider, err := trace.NewTracerProvider(contextContext, string2, bootstrap)
+	if err != nil {
+		return nil, nil, err
+	}
+	meterProvider, err := trace.NewMeterProvider(string2, bootstrap)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData, cleanup, err := data.NewData(bootstrap, tracerProvider, meterProvider, logger)
 	if err != nil {
 		return nil, nil, err
 	}
 	greeterRepo := data.NewGreeterRepo(dataData, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
-	app := newApp(logger, grpcServer, httpServer)
+	v := server.NewGRPCServiceSet(greeterService)
+	meter, err := trace.NewMeter(string2, meterProvider)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	grpcServer := server.NewGRPCServer(bootstrap, v, logger, meter, tracerProvider)
+	v2 := server.NewHTTPServiceSet(greeterService)
+	httpServer := server.NewHTTPServer(bootstrap, v2, logger, meter, tracerProvider)
+	pprofServer, err := server.NewPprof(bootstrap, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	etcdRegistry := registry.NewEtcdRegistry(bootstrap, logger)
+	app := newApp(logger, grpcServer, httpServer, pprofServer, etcdRegistry)
 	return app, func() {
 		cleanup()
 	}, nil

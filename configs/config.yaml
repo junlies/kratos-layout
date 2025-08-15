@@ -1,3 +1,13 @@
+env: DEV
+
+log:
+  filepath: /app/log/app.log
+  max_size: 256
+  max_backups: 20
+  # debug -1, info 0, warn 1, error 2, dPanic 3, panic 4, fatal 5
+  level: -1
+  max_age: 15
+
 server:
   http:
     addr: 0.0.0.0:8000
@@ -5,11 +15,32 @@ server:
   grpc:
     addr: 0.0.0.0:9000
     timeout: 1s
+  pprof:
+    addr: 0.0.0.0:6060
+
+registry:
+  endpoint:
+    - etcd:2379
+
+otel:
+  trace:
+    endpoint: jaeger:4317
+    insecure: true
+  metric:
+    enable_exemplar: true
+
 data:
   database:
-    driver: mysql
-    source: root:root@tcp(127.0.0.1:3306)/test?parseTime=True&loc=Local
+    helloworld:
+      driver: mysql
+      source: root:123456@tcp(mysql:3306)/information_schema?parseTime=True&loc=Local
+      max_open_conn: 20
+      max_idle_conn: 10
+      conn_max_lifetime: 1800s
   redis:
-    addr: 127.0.0.1:6379
-    read_timeout: 0.2s
-    write_timeout: 0.2s
+    helloworld:
+      addr: redis:6379
+      password: "123456"
+      read_timeout: 0.2s
+      write_timeout: 0.2s
+      shards: [ 0, 1 ]
