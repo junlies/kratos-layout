@@ -26,7 +26,7 @@ jobs:
 
       - name: Extract and Normalize Variables
         run: |
-          echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_ENV
+          echo "REPO_OWNER=$(echo $GITHUB_REPOSITORY_OWNER | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Generate timestamp for Beijing time
         run: |
@@ -69,10 +69,10 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
           --secret id=api_token,env=API_TOKEN \
-          -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }} .
-        env:
-          API_TOKEN: ${{ secrets.API_TOKEN }}
+          -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }} \
+          -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:latest .
 
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }}
+          docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:latest
