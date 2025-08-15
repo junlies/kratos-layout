@@ -65,6 +65,14 @@ jobs:
       - name: Test
         run: go test -v ./...
 
+      - name: Build Docker image
+        run: |
+          DOCKER_BUILDKIT=1 docker build \
+          --secret id=api_token,env=API_TOKEN \
+          -t ghcr.io/${{ env.REPO_OWNER }}/jlp-hedger:${{ env.TIMESTAMP }} .
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }}
