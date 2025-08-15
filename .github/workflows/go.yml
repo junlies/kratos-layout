@@ -69,7 +69,7 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
           --secret id=api_token,env=API_TOKEN \
-          -t ghcr.io/${{ env.REPO_OWNER }}/jlp-hedger:${{ env.TIMESTAMP }} .
+          -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }} .
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
 
