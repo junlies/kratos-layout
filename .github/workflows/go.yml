@@ -49,10 +49,7 @@ jobs:
 
       - name: Prepare cache dirs
         run: |
-          rm -rf ~/.cache/go-build
-          rm -rf ~/go/pkg/mod
           mkdir -p ~/.cache/go-build
-          mkdir -p ~/go/pkg/mod
 
       - name: Module cache
         uses: actions/cache@v4
