@@ -3,6 +3,7 @@ name: Go
 on:
   push:
     branches: [ main ]
+    tags: [ '*' ]
   pull_request:
     branches: [ main ]
 
@@ -19,6 +20,17 @@ jobs:
         with:
           go-version: ^1.24
 
+      - name: Get version (tag or time)
+        id: version
+        run: |
+          TAG=$(git describe --tags --exact-match 2>/dev/null || true)
+          if [ -n "$TAG" ]; then
+            VERSION="$TAG"
+          else
+            VERSION=$(TZ='Asia/Shanghai' date +'%Y%m%d%H%M%S')
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Setup Environment
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
@@ -27,12 +39,6 @@ jobs:
       - name: Extract and Normalize Variables
         run: |
           echo "REPO_OWNER=$(echo $GITHUB_REPOSITORY_OWNER | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-      - name: Generate timestamp for Beijing time
-        run: |
-          YEAR_LAST_DIGIT=$(TZ='Asia/Shanghai' date '+%Y' | tail -c 2)
-          TIMESTAMP=$(TZ='Asia/Shanghai' date "+${YEAR_LAST_DIGIT}%m%d%H%M")
-          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
