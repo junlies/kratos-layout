@@ -47,20 +47,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.API_TOKEN }}
 
-      - name: Prepare cache dirs
-        run: |
-          mkdir -p ~/.cache/go-build
-
-      - name: Module cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-go
-
       - name: Get dependencies
         run: |
           go get -v -t -d ./...
