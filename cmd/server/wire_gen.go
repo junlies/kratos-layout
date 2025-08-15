@@ -27,7 +27,8 @@ import (
 
 // wireApp init kratos application.
 func wireApp(contextContext context.Context, string2 string, bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
-	tracerProvider, err := trace.NewTracerProvider(contextContext, string2, bootstrap)
+	textMapPropagator := trace.NewTextMapPropagator()
+	tracerProvider, err := trace.NewTracerProvider(contextContext, string2, bootstrap, textMapPropagator)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -35,7 +36,7 @@ func wireApp(contextContext context.Context, string2 string, bootstrap *conf.Boo
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData, cleanup, err := data.NewData(bootstrap, tracerProvider, meterProvider, logger)
+	dataData, cleanup, err := data.NewData(bootstrap, tracerProvider, meterProvider, textMapPropagator, logger)
 	if err != nil {
 		return nil, nil, err
 	}

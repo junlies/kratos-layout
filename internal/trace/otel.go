@@ -54,7 +54,7 @@ func NewMeterProvider(name string, bc *conf.Bootstrap) (metric.MeterProvider, er
 	return provider, nil
 }
 
-func NewTracerProvider(ctx context.Context, name string, bc *conf.Bootstrap) (trace.TracerProvider, error) {
+func NewTracerProvider(ctx context.Context, name string, bc *conf.Bootstrap, textMapPropagator propagation.TextMapPropagator) (trace.TracerProvider, error) {
 	traceConf := bc.Otel.Trace
 	opts := []otlptracegrpc.Option{otlptracegrpc.WithEndpoint(traceConf.Endpoint)}
 	if traceConf.Insecure {
@@ -76,14 +76,18 @@ func NewTracerProvider(ctx context.Context, name string, bc *conf.Bootstrap) (tr
 		),
 	)
 	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
-		tracing.Metadata{},
-		propagation.Baggage{},
-		propagation.TraceContext{},
-	))
+	otel.SetTextMapPropagator(textMapPropagator)
 	return tp, nil
 }
 
 func NewTracer(name string, tp trace.TracerProvider) (trace.Tracer, error) {
 	return tp.Tracer(name), nil
+}
+
+func NewTextMapPropagator() propagation.TextMapPropagator {
+	return propagation.NewCompositeTextMapPropagator(
+		tracing.Metadata{},
+		propagation.Baggage{},
+		propagation.TraceContext{},
+	)
 }

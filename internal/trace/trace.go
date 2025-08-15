@@ -2,4 +2,4 @@ package trace
 
 import "github.com/google/wire"
 
-var ProviderSet = wire.NewSet(NewMeter, NewMeterProvider, NewTracerProvider, NewTracer)
+var ProviderSet = wire.NewSet(NewMeter, NewMeterProvider, NewTracerProvider, NewTracer, NewTextMapPropagator)
