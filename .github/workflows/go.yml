@@ -24,6 +24,10 @@ jobs:
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
+      - name: Extract and Normalize Variables
+        run: |
+          echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_ENV
+
       - name: Generate timestamp for Beijing time
         run: |
           YEAR_LAST_DIGIT=$(TZ='Asia/Shanghai' date '+%Y' | tail -c 2)
