@@ -75,10 +75,10 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
           --secret id=api_token,env=API_TOKEN \
-          -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }} \
+          -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.VERSION }} \
           -t ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:latest .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }}
+          docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.VERSION }}
           docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:latest
