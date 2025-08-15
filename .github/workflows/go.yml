@@ -60,3 +60,7 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ env.REPO_OWNER }}/kratos-layout:${{ env.TIMESTAMP }}
