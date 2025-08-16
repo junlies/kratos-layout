@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos-layout/internal/service"
 	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"go.opentelemetry.io/otel/metric"
@@ -32,6 +33,7 @@ func NewGRPCServer(bc *conf.Bootstrap, gs []GrpcService, logger log.Logger, mete
 			validate.ProtoValidate(),
 			logging.Server(logger),
 			metrics.Server(metrics.WithRequests(counter), metrics.WithSeconds(seconds)),
+			metadata.Server(),
 		),
 	}
 	s := bc.GetServer()

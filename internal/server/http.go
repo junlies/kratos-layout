@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos-layout/internal/service"
 	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/metadata"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/prometheus/client_golang/prometheus"
@@ -35,6 +36,7 @@ func NewHTTPServer(bc *conf.Bootstrap, hs []HttpService, logger log.Logger, mete
 			tracing.Server(tracing.WithTracerProvider(tp)),
 			logging.Server(logger),
 			metrics.Server(metrics.WithRequests(counter), metrics.WithSeconds(seconds)),
+			metadata.Server(),
 		),
 	}
 	c := bc.GetServer()
