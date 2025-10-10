@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"io"
+	"strings"
 )
 
 func Set(ctx context.Context, key, value string) (context.Context, error) {
@@ -68,4 +69,15 @@ func GetHttpRequestBody(ctx context.Context) ([]byte, bool) {
 	}
 
 	return bodyByte, true
+}
+
+func GetAccessToken(ctx context.Context) (string, error) {
+	auth, err := Get(ctx, KeyAuthorization)
+	if err != nil {
+		return "", err
+	}
+	if len(auth) > 0 && strings.HasPrefix(auth, "Bearer ") {
+		return strings.TrimPrefix(auth, "Bearer "), nil
+	}
+	return "", errors.New("no access token")
 }
