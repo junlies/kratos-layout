@@ -31,9 +31,15 @@ otel:
 
 data:
   database:
-    helloworld:
+    mysql:
       driver: mysql
       source: root:123456@tcp(mysql:3306)/information_schema?parseTime=True&loc=Local
+      max_open_conn: 20
+      max_idle_conn: 10
+      conn_max_lifetime: 1800s
+    pgsql:
+      driver: postgresql
+      source: postgres://postgres:postgres@postgresql:5432/postgres
       max_open_conn: 20
       max_idle_conn: 10
       conn_max_lifetime: 1800s

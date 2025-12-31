@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"flag"
+	"os"
+
 	"github.com/go-kratos/kratos-layout/internal/server"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
-	"os"
 
 	"github.com/go-kratos/kratos-layout/internal/conf"
 

@@ -2,6 +2,7 @@ package trace
 
 import (
 	"context"
+
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"

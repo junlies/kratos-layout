@@ -2,6 +2,7 @@ package data
 
 import (
 	"fmt"
+
 	"github.com/IBM/sarama"
 	"github.com/dnwe/otelsarama"
 	"github.com/go-kratos/kratos-layout/internal/conf"

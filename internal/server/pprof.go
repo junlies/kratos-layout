@@ -2,13 +2,14 @@ package server
 
 import (
 	"context"
-	"github.com/go-kratos/kratos-layout/internal/conf"
-	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/go-kratos/kratos/v2/log"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"sync/atomic"
+
+	"github.com/go-kratos/kratos-layout/internal/conf"
+	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 type PprofServer struct {

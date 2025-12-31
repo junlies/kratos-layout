@@ -40,14 +40,14 @@ func NewHTTPServer(bc *conf.Bootstrap, hs []HttpService, logger log.Logger, mete
 		),
 	}
 	c := bc.GetServer()
-	if c.Http.Network != "" {
-		opts = append(opts, http.Network(c.Http.Network))
+	if c.Http.GetNetwork() != "" {
+		opts = append(opts, http.Network(c.Http.GetNetwork()))
 	}
-	if c.Http.Addr != "" {
-		opts = append(opts, http.Address(c.Http.Addr))
+	if c.Http.GetAddr() != "" {
+		opts = append(opts, http.Address(c.Http.GetAddr()))
 	}
-	if c.Http.Timeout != nil {
-		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
+	if c.Http.GetTimeout() != nil {
+		opts = append(opts, http.Timeout(c.Http.GetTimeout().AsDuration()))
 	}
 	srv := http.NewServer(opts...)
 	srv.HandlePrefix("/metrics", promhttp.HandlerFor(

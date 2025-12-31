@@ -3,7 +3,7 @@ version: "3"
 services:
   etcd:
     image: bitnami/etcd:3
-    restart: unless-stopped
+    restart: always
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_ENABLE_V2=true
@@ -13,7 +13,7 @@ services:
       - "42379:2379"
   jaeger:
     image: jaegertracing/all-in-one
-    restart: unless-stopped
+    restart: always
     ports:
       - "16686:16686"
       - "44317:4317"
@@ -24,19 +24,29 @@ services:
       - PROMETHEUS_SERVER_URL=http://127.0.0.1:9090
   mysql:
     image: mysql:latest
-    restart: unless-stopped
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=123456
     ports:
       - "43306:3306"
+  postgresql:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "45432:5432"
   redis:
     image: redis:latest
-    restart: unless-stopped
+    restart: always
     ports:
       - "46379:6379"
     command: [ "redis-server", "--requirepass", "123456" ]
   kafka:
     image: confluentinc/cp-kafka:latest
+    restart: always
     hostname: kafka
     ports:
       - "49092:9092"
@@ -53,7 +63,7 @@ services:
       CLUSTER_ID: 1
   helloworld:
     build: .
-    restart: unless-stopped
+    restart: always
     ports:
       - "48000:8000"
       - "49000:9000"
@@ -64,6 +74,7 @@ services:
       - etcd
       - jaeger
       - mysql
+      - postgresql
       - redis
       - kafka
     deploy:

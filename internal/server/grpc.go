@@ -37,14 +37,14 @@ func NewGRPCServer(bc *conf.Bootstrap, gs []GrpcService, logger log.Logger, mete
 		),
 	}
 	s := bc.GetServer()
-	if s.Grpc.Network != "" {
-		opts = append(opts, grpc.Network(s.Grpc.Network))
+	if s.Grpc.GetNetwork() != "" {
+		opts = append(opts, grpc.Network(s.Grpc.GetNetwork()))
 	}
-	if s.Grpc.Addr != "" {
-		opts = append(opts, grpc.Address(s.Grpc.Addr))
+	if s.Grpc.GetAddr() != "" {
+		opts = append(opts, grpc.Address(s.Grpc.GetAddr()))
 	}
-	if s.Grpc.Timeout != nil {
-		opts = append(opts, grpc.Timeout(s.Grpc.Timeout.AsDuration()))
+	if s.Grpc.GetTimeout() != nil {
+		opts = append(opts, grpc.Timeout(s.Grpc.GetTimeout().AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
 	for _, g := range gs {

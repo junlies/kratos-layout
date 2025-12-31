@@ -2,13 +2,14 @@ package log
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/go-kratos/kratos-layout/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"os"
-	"time"
 )
 
 type zapWrapper func(level log.Level, keyvals ...interface{}) error
