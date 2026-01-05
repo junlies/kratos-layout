@@ -67,7 +67,14 @@ func main() {
 		panic(err)
 	}
 
-	var bc conf.Bootstrap
+	bc := conf.Bootstrap{
+		Metadata: &conf.MetaData{
+			Name:     Name,
+			Version:  Version,
+			ConfPath: flagconf,
+			Id:       id,
+		},
+	}
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
@@ -84,7 +91,7 @@ func main() {
 		"span.id", tracing.SpanID(),
 	)
 
-	app, cleanup, err := wireApp(context.Background(), Name, &bc, logger)
+	app, cleanup, err := wireApp(context.Background(), &bc, logger)
 	if err != nil {
 		panic(err)
 	}

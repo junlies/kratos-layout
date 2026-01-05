@@ -14,11 +14,20 @@ enum Environment {
 
 message Bootstrap {
   Environment env = 1;
-  Server server = 2;
-  Registry registry = 3;
-  Otel otel = 4;
-  Log log = 5;
-  Data data = 6;
+  MetaData metadata = 2;
+  Server server = 3;
+  Registry registry = 4;
+  BBR bbr = 5;
+  Otel otel = 6;
+  Log log = 7;
+  Data data = 8;
+}
+
+message MetaData{
+  string Name = 1;
+  string Version = 2;
+  string ConfPath = 3;
+  string Id = 4;
 }
 
 message Log {
@@ -50,6 +59,12 @@ message Server {
 
 message Registry {
   repeated string endpoint = 1;
+}
+
+message BBR {
+  google.protobuf.Duration    window_size = 1;
+  int32                       bucket = 2;
+  int64                       cpu_threshold = 3;
 }
 
 message Otel {

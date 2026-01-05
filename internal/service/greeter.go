@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"time"
 
 	v1 "github.com/go-kratos/kratos-layout/api/helloworld/v1"
 	"github.com/go-kratos/kratos-layout/internal/biz"
+	"github.com/go-kratos/kratos-layout/internal/middleware"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
@@ -27,6 +29,17 @@ func (s *GreeterService) RegisterServer(srv *grpc.Server) {
 
 func (s *GreeterService) RegisterHttpServer(srv *http.Server) {
 	v1.RegisterGreeterHTTPServer(srv, s)
+}
+
+func (s *GreeterService) RegisterLimiter() []*middleware.LimiterConfig {
+	return []*middleware.LimiterConfig{
+		{
+			O: v1.OperationGreeterSayHello,
+			R: 2000,
+			B: 2000,
+			T: time.Second * 3,
+		},
+	}
 }
 
 // SayHello implements helloworld.GreeterServer.

@@ -22,7 +22,7 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(context.Context, string, *conf.Bootstrap, log.Logger) (*kratos.App, func(), error) {
+func wireApp(context.Context, *conf.Bootstrap, log.Logger) (*kratos.App, func(), error) {
 	panic(wire.Build(
 		registry.ProviderSet,
 		trace.ProviderSet,

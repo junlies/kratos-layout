@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-kratos/kratos-layout/internal/conf"
+	"github.com/go-kratos/kratos-layout/internal/middleware"
 	"github.com/go-kratos/kratos-layout/internal/service"
 	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -26,6 +27,12 @@ func NewGRPCServer(bc *conf.Bootstrap, gs []GrpcService, logger log.Logger, mete
 	if err != nil {
 		panic(err)
 	}
+
+	ls := make([]*middleware.LimiterConfig, 0, len(gs))
+	for _, g := range gs {
+		ls = append(ls, g.RegisterLimiter()...)
+	}
+
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -34,6 +41,8 @@ func NewGRPCServer(bc *conf.Bootstrap, gs []GrpcService, logger log.Logger, mete
 			logging.Server(logger),
 			metrics.Server(metrics.WithRequests(counter), metrics.WithSeconds(seconds)),
 			metadata.Server(),
+			middleware.TraceMiddleware(),
+			middleware.Limiter(ls, middleware.WithBBR(bc.GetBbr())),
 		),
 	}
 	s := bc.GetServer()
@@ -55,6 +64,7 @@ func NewGRPCServer(bc *conf.Bootstrap, gs []GrpcService, logger log.Logger, mete
 
 type GrpcService interface {
 	RegisterServer(*grpc.Server)
+	RegisterLimiter() []*middleware.LimiterConfig
 }
 
 func NewGRPCServiceSet(greeter *service.GreeterService) []GrpcService {

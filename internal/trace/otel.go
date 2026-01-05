@@ -20,11 +20,11 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func NewMeter(name string, provider metric.MeterProvider) (metric.Meter, error) {
-	return provider.Meter(name), nil
+func NewMeter(bc *conf.Bootstrap, provider metric.MeterProvider) (metric.Meter, error) {
+	return provider.Meter(bc.GetMetadata().GetName()), nil
 }
 
-func NewMeterProvider(name string, bc *conf.Bootstrap) (metric.MeterProvider, error) {
+func NewMeterProvider(bc *conf.Bootstrap) (metric.MeterProvider, error) {
 	metricConf := bc.GetOtel().Metric
 	exporter, err := prometheus.New()
 	if err != nil {
@@ -42,7 +42,7 @@ func NewMeterProvider(name string, bc *conf.Bootstrap) (metric.MeterProvider, er
 		sdkmetric.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
-				semconv.ServiceNameKey.String(name),
+				semconv.ServiceNameKey.String(bc.GetMetadata().GetName()),
 				attribute.String("env", bc.GetEnv().String()),
 			),
 		),
@@ -55,7 +55,7 @@ func NewMeterProvider(name string, bc *conf.Bootstrap) (metric.MeterProvider, er
 	return provider, nil
 }
 
-func NewTracerProvider(ctx context.Context, name string, bc *conf.Bootstrap, textMapPropagator propagation.TextMapPropagator) (trace.TracerProvider, error) {
+func NewTracerProvider(ctx context.Context, bc *conf.Bootstrap, textMapPropagator propagation.TextMapPropagator) (trace.TracerProvider, error) {
 	traceConf := bc.Otel.Trace
 	opts := []otlptracegrpc.Option{otlptracegrpc.WithEndpoint(traceConf.Endpoint)}
 	if traceConf.Insecure {
@@ -71,7 +71,7 @@ func NewTracerProvider(ctx context.Context, name string, bc *conf.Bootstrap, tex
 		tracesdk.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
-				semconv.ServiceNameKey.String(name),
+				semconv.ServiceNameKey.String(bc.GetMetadata().GetName()),
 				attribute.String("env", bc.GetEnv().String()),
 			),
 		),
@@ -81,8 +81,8 @@ func NewTracerProvider(ctx context.Context, name string, bc *conf.Bootstrap, tex
 	return tp, nil
 }
 
-func NewTracer(name string, tp trace.TracerProvider) (trace.Tracer, error) {
-	return tp.Tracer(name), nil
+func NewTracer(bc *conf.Bootstrap, tp trace.TracerProvider) (trace.Tracer, error) {
+	return tp.Tracer(bc.GetMetadata().GetName()), nil
 }
 
 func NewTextMapPropagator() propagation.TextMapPropagator {

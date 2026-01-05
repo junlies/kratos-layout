@@ -26,13 +26,13 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(contextContext context.Context, string2 string, bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(contextContext context.Context, bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
 	textMapPropagator := trace.NewTextMapPropagator()
-	tracerProvider, err := trace.NewTracerProvider(contextContext, string2, bootstrap, textMapPropagator)
+	tracerProvider, err := trace.NewTracerProvider(contextContext, bootstrap, textMapPropagator)
 	if err != nil {
 		return nil, nil, err
 	}
-	meterProvider, err := trace.NewMeterProvider(string2, bootstrap)
+	meterProvider, err := trace.NewMeterProvider(bootstrap)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -44,7 +44,7 @@ func wireApp(contextContext context.Context, string2 string, bootstrap *conf.Boo
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase)
 	v := server.NewGRPCServiceSet(greeterService)
-	meter, err := trace.NewMeter(string2, meterProvider)
+	meter, err := trace.NewMeter(bootstrap, meterProvider)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

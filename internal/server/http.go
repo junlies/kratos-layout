@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-kratos/kratos-layout/internal/conf"
+	"github.com/go-kratos/kratos-layout/internal/middleware"
 	"github.com/go-kratos/kratos-layout/internal/service"
 	"github.com/go-kratos/kratos/contrib/middleware/validate/v2"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -29,6 +30,11 @@ func NewHTTPServer(bc *conf.Bootstrap, hs []HttpService, logger log.Logger, mete
 		panic(err)
 	}
 
+	ls := make([]*middleware.LimiterConfig, 0, len(hs))
+	for _, h := range hs {
+		ls = append(ls, h.RegisterLimiter()...)
+	}
+
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -37,6 +43,8 @@ func NewHTTPServer(bc *conf.Bootstrap, hs []HttpService, logger log.Logger, mete
 			logging.Server(logger),
 			metrics.Server(metrics.WithRequests(counter), metrics.WithSeconds(seconds)),
 			metadata.Server(),
+			middleware.TraceMiddleware(),
+			middleware.Limiter(ls, middleware.WithBBR(bc.GetBbr())),
 		),
 	}
 	c := bc.GetServer()
@@ -64,6 +72,7 @@ func NewHTTPServer(bc *conf.Bootstrap, hs []HttpService, logger log.Logger, mete
 
 type HttpService interface {
 	RegisterHttpServer(*http.Server)
+	RegisterLimiter() []*middleware.LimiterConfig
 }
 
 func NewHTTPServiceSet(greeter *service.GreeterService) []HttpService {

@@ -77,11 +77,13 @@ func (Environment) EnumDescriptor() ([]byte, []int) {
 type Bootstrap struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Env           Environment            `protobuf:"varint,1,opt,name=env,proto3,enum=kratos.api.Environment" json:"env,omitempty"`
-	Server        *Server                `protobuf:"bytes,2,opt,name=server,proto3" json:"server,omitempty"`
-	Registry      *Registry              `protobuf:"bytes,3,opt,name=registry,proto3" json:"registry,omitempty"`
-	Otel          *Otel                  `protobuf:"bytes,4,opt,name=otel,proto3" json:"otel,omitempty"`
-	Log           *Log                   `protobuf:"bytes,5,opt,name=log,proto3" json:"log,omitempty"`
-	Data          *Data                  `protobuf:"bytes,6,opt,name=data,proto3" json:"data,omitempty"`
+	Metadata      *MetaData              `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Server        *Server                `protobuf:"bytes,3,opt,name=server,proto3" json:"server,omitempty"`
+	Registry      *Registry              `protobuf:"bytes,4,opt,name=registry,proto3" json:"registry,omitempty"`
+	Bbr           *BBR                   `protobuf:"bytes,5,opt,name=bbr,proto3" json:"bbr,omitempty"`
+	Otel          *Otel                  `protobuf:"bytes,6,opt,name=otel,proto3" json:"otel,omitempty"`
+	Log           *Log                   `protobuf:"bytes,7,opt,name=log,proto3" json:"log,omitempty"`
+	Data          *Data                  `protobuf:"bytes,8,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -123,6 +125,13 @@ func (x *Bootstrap) GetEnv() Environment {
 	return Environment_NONE
 }
 
+func (x *Bootstrap) GetMetadata() *MetaData {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
 func (x *Bootstrap) GetServer() *Server {
 	if x != nil {
 		return x.Server
@@ -133,6 +142,13 @@ func (x *Bootstrap) GetServer() *Server {
 func (x *Bootstrap) GetRegistry() *Registry {
 	if x != nil {
 		return x.Registry
+	}
+	return nil
+}
+
+func (x *Bootstrap) GetBbr() *BBR {
+	if x != nil {
+		return x.Bbr
 	}
 	return nil
 }
@@ -158,6 +174,74 @@ func (x *Bootstrap) GetData() *Data {
 	return nil
 }
 
+type MetaData struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
+	Version       string                 `protobuf:"bytes,2,opt,name=Version,proto3" json:"Version,omitempty"`
+	ConfPath      string                 `protobuf:"bytes,3,opt,name=ConfPath,proto3" json:"ConfPath,omitempty"`
+	Id            string                 `protobuf:"bytes,4,opt,name=Id,proto3" json:"Id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetaData) Reset() {
+	*x = MetaData{}
+	mi := &file_conf_conf_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetaData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetaData) ProtoMessage() {}
+
+func (x *MetaData) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_conf_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetaData.ProtoReflect.Descriptor instead.
+func (*MetaData) Descriptor() ([]byte, []int) {
+	return file_conf_conf_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *MetaData) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *MetaData) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *MetaData) GetConfPath() string {
+	if x != nil {
+		return x.ConfPath
+	}
+	return ""
+}
+
+func (x *MetaData) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type Log struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Filepath      string                 `protobuf:"bytes,1,opt,name=filepath,proto3" json:"filepath,omitempty"`
@@ -171,7 +255,7 @@ type Log struct {
 
 func (x *Log) Reset() {
 	*x = Log{}
-	mi := &file_conf_conf_proto_msgTypes[1]
+	mi := &file_conf_conf_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -183,7 +267,7 @@ func (x *Log) String() string {
 func (*Log) ProtoMessage() {}
 
 func (x *Log) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[1]
+	mi := &file_conf_conf_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -196,7 +280,7 @@ func (x *Log) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Log.ProtoReflect.Descriptor instead.
 func (*Log) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{1}
+	return file_conf_conf_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Log) GetFilepath() string {
@@ -245,7 +329,7 @@ type Server struct {
 
 func (x *Server) Reset() {
 	*x = Server{}
-	mi := &file_conf_conf_proto_msgTypes[2]
+	mi := &file_conf_conf_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -257,7 +341,7 @@ func (x *Server) String() string {
 func (*Server) ProtoMessage() {}
 
 func (x *Server) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[2]
+	mi := &file_conf_conf_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -270,7 +354,7 @@ func (x *Server) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server.ProtoReflect.Descriptor instead.
 func (*Server) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2}
+	return file_conf_conf_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Server) GetHttp() *Server_HTTP {
@@ -303,7 +387,7 @@ type Registry struct {
 
 func (x *Registry) Reset() {
 	*x = Registry{}
-	mi := &file_conf_conf_proto_msgTypes[3]
+	mi := &file_conf_conf_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -315,7 +399,7 @@ func (x *Registry) String() string {
 func (*Registry) ProtoMessage() {}
 
 func (x *Registry) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[3]
+	mi := &file_conf_conf_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -328,7 +412,7 @@ func (x *Registry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Registry.ProtoReflect.Descriptor instead.
 func (*Registry) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{3}
+	return file_conf_conf_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Registry) GetEndpoint() []string {
@@ -336,6 +420,66 @@ func (x *Registry) GetEndpoint() []string {
 		return x.Endpoint
 	}
 	return nil
+}
+
+type BBR struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	WindowSize    *durationpb.Duration   `protobuf:"bytes,1,opt,name=window_size,json=windowSize,proto3" json:"window_size,omitempty"`
+	Bucket        int32                  `protobuf:"varint,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	CpuThreshold  int64                  `protobuf:"varint,3,opt,name=cpu_threshold,json=cpuThreshold,proto3" json:"cpu_threshold,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BBR) Reset() {
+	*x = BBR{}
+	mi := &file_conf_conf_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BBR) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BBR) ProtoMessage() {}
+
+func (x *BBR) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_conf_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BBR.ProtoReflect.Descriptor instead.
+func (*BBR) Descriptor() ([]byte, []int) {
+	return file_conf_conf_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *BBR) GetWindowSize() *durationpb.Duration {
+	if x != nil {
+		return x.WindowSize
+	}
+	return nil
+}
+
+func (x *BBR) GetBucket() int32 {
+	if x != nil {
+		return x.Bucket
+	}
+	return 0
+}
+
+func (x *BBR) GetCpuThreshold() int64 {
+	if x != nil {
+		return x.CpuThreshold
+	}
+	return 0
 }
 
 type Otel struct {
@@ -348,7 +492,7 @@ type Otel struct {
 
 func (x *Otel) Reset() {
 	*x = Otel{}
-	mi := &file_conf_conf_proto_msgTypes[4]
+	mi := &file_conf_conf_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -360,7 +504,7 @@ func (x *Otel) String() string {
 func (*Otel) ProtoMessage() {}
 
 func (x *Otel) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[4]
+	mi := &file_conf_conf_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -373,7 +517,7 @@ func (x *Otel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Otel.ProtoReflect.Descriptor instead.
 func (*Otel) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{4}
+	return file_conf_conf_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Otel) GetTrace() *Otel_Trace {
@@ -401,7 +545,7 @@ type Data struct {
 
 func (x *Data) Reset() {
 	*x = Data{}
-	mi := &file_conf_conf_proto_msgTypes[5]
+	mi := &file_conf_conf_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -413,7 +557,7 @@ func (x *Data) String() string {
 func (*Data) ProtoMessage() {}
 
 func (x *Data) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[5]
+	mi := &file_conf_conf_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -426,7 +570,7 @@ func (x *Data) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data.ProtoReflect.Descriptor instead.
 func (*Data) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{5}
+	return file_conf_conf_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Data) GetDatabase() map[string]*Data_Database {
@@ -461,7 +605,7 @@ type Server_HTTP struct {
 
 func (x *Server_HTTP) Reset() {
 	*x = Server_HTTP{}
-	mi := &file_conf_conf_proto_msgTypes[6]
+	mi := &file_conf_conf_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -473,7 +617,7 @@ func (x *Server_HTTP) String() string {
 func (*Server_HTTP) ProtoMessage() {}
 
 func (x *Server_HTTP) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[6]
+	mi := &file_conf_conf_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -486,7 +630,7 @@ func (x *Server_HTTP) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_HTTP.ProtoReflect.Descriptor instead.
 func (*Server_HTTP) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2, 0}
+	return file_conf_conf_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *Server_HTTP) GetNetwork() string {
@@ -521,7 +665,7 @@ type Server_GRPC struct {
 
 func (x *Server_GRPC) Reset() {
 	*x = Server_GRPC{}
-	mi := &file_conf_conf_proto_msgTypes[7]
+	mi := &file_conf_conf_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -533,7 +677,7 @@ func (x *Server_GRPC) String() string {
 func (*Server_GRPC) ProtoMessage() {}
 
 func (x *Server_GRPC) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[7]
+	mi := &file_conf_conf_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -546,7 +690,7 @@ func (x *Server_GRPC) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_GRPC.ProtoReflect.Descriptor instead.
 func (*Server_GRPC) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2, 1}
+	return file_conf_conf_proto_rawDescGZIP(), []int{3, 1}
 }
 
 func (x *Server_GRPC) GetNetwork() string {
@@ -579,7 +723,7 @@ type Server_Pprof struct {
 
 func (x *Server_Pprof) Reset() {
 	*x = Server_Pprof{}
-	mi := &file_conf_conf_proto_msgTypes[8]
+	mi := &file_conf_conf_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -591,7 +735,7 @@ func (x *Server_Pprof) String() string {
 func (*Server_Pprof) ProtoMessage() {}
 
 func (x *Server_Pprof) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[8]
+	mi := &file_conf_conf_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -604,7 +748,7 @@ func (x *Server_Pprof) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_Pprof.ProtoReflect.Descriptor instead.
 func (*Server_Pprof) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2, 2}
+	return file_conf_conf_proto_rawDescGZIP(), []int{3, 2}
 }
 
 func (x *Server_Pprof) GetAddr() string {
@@ -624,7 +768,7 @@ type Otel_Trace struct {
 
 func (x *Otel_Trace) Reset() {
 	*x = Otel_Trace{}
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -636,7 +780,7 @@ func (x *Otel_Trace) String() string {
 func (*Otel_Trace) ProtoMessage() {}
 
 func (x *Otel_Trace) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -649,7 +793,7 @@ func (x *Otel_Trace) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Otel_Trace.ProtoReflect.Descriptor instead.
 func (*Otel_Trace) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{4, 0}
+	return file_conf_conf_proto_rawDescGZIP(), []int{6, 0}
 }
 
 func (x *Otel_Trace) GetEndpoint() string {
@@ -675,7 +819,7 @@ type Otel_Metric struct {
 
 func (x *Otel_Metric) Reset() {
 	*x = Otel_Metric{}
-	mi := &file_conf_conf_proto_msgTypes[10]
+	mi := &file_conf_conf_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -687,7 +831,7 @@ func (x *Otel_Metric) String() string {
 func (*Otel_Metric) ProtoMessage() {}
 
 func (x *Otel_Metric) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[10]
+	mi := &file_conf_conf_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -700,7 +844,7 @@ func (x *Otel_Metric) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Otel_Metric.ProtoReflect.Descriptor instead.
 func (*Otel_Metric) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{4, 1}
+	return file_conf_conf_proto_rawDescGZIP(), []int{6, 1}
 }
 
 func (x *Otel_Metric) GetEnableExemplar() bool {
@@ -723,7 +867,7 @@ type Data_Database struct {
 
 func (x *Data_Database) Reset() {
 	*x = Data_Database{}
-	mi := &file_conf_conf_proto_msgTypes[11]
+	mi := &file_conf_conf_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -735,7 +879,7 @@ func (x *Data_Database) String() string {
 func (*Data_Database) ProtoMessage() {}
 
 func (x *Data_Database) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[11]
+	mi := &file_conf_conf_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -748,7 +892,7 @@ func (x *Data_Database) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Database.ProtoReflect.Descriptor instead.
 func (*Data_Database) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{5, 0}
+	return file_conf_conf_proto_rawDescGZIP(), []int{7, 0}
 }
 
 func (x *Data_Database) GetDriver() string {
@@ -799,7 +943,7 @@ type Data_Redis struct {
 
 func (x *Data_Redis) Reset() {
 	*x = Data_Redis{}
-	mi := &file_conf_conf_proto_msgTypes[12]
+	mi := &file_conf_conf_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -811,7 +955,7 @@ func (x *Data_Redis) String() string {
 func (*Data_Redis) ProtoMessage() {}
 
 func (x *Data_Redis) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[12]
+	mi := &file_conf_conf_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -824,7 +968,7 @@ func (x *Data_Redis) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Redis.ProtoReflect.Descriptor instead.
 func (*Data_Redis) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{5, 1}
+	return file_conf_conf_proto_rawDescGZIP(), []int{7, 1}
 }
 
 func (x *Data_Redis) GetAddr() string {
@@ -872,7 +1016,7 @@ type Data_Kafka struct {
 
 func (x *Data_Kafka) Reset() {
 	*x = Data_Kafka{}
-	mi := &file_conf_conf_proto_msgTypes[13]
+	mi := &file_conf_conf_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -884,7 +1028,7 @@ func (x *Data_Kafka) String() string {
 func (*Data_Kafka) ProtoMessage() {}
 
 func (x *Data_Kafka) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[13]
+	mi := &file_conf_conf_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -897,7 +1041,7 @@ func (x *Data_Kafka) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Kafka.ProtoReflect.Descriptor instead.
 func (*Data_Kafka) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{5, 2}
+	return file_conf_conf_proto_rawDescGZIP(), []int{7, 2}
 }
 
 func (x *Data_Kafka) GetBrokerList() []string {
@@ -919,14 +1063,21 @@ var File_conf_conf_proto protoreflect.FileDescriptor
 const file_conf_conf_proto_rawDesc = "" +
 	"\n" +
 	"\x0fconf/conf.proto\x12\n" +
-	"kratos.api\x1a\x1egoogle/protobuf/duration.proto\"\x83\x02\n" +
+	"kratos.api\x1a\x1egoogle/protobuf/duration.proto\"\xd8\x02\n" +
 	"\tBootstrap\x12)\n" +
-	"\x03env\x18\x01 \x01(\x0e2\x17.kratos.api.EnvironmentR\x03env\x12*\n" +
-	"\x06server\x18\x02 \x01(\v2\x12.kratos.api.ServerR\x06server\x120\n" +
-	"\bregistry\x18\x03 \x01(\v2\x14.kratos.api.RegistryR\bregistry\x12$\n" +
-	"\x04otel\x18\x04 \x01(\v2\x10.kratos.api.OtelR\x04otel\x12!\n" +
-	"\x03log\x18\x05 \x01(\v2\x0f.kratos.api.LogR\x03log\x12$\n" +
-	"\x04data\x18\x06 \x01(\v2\x10.kratos.api.DataR\x04data\"\x8c\x01\n" +
+	"\x03env\x18\x01 \x01(\x0e2\x17.kratos.api.EnvironmentR\x03env\x120\n" +
+	"\bmetadata\x18\x02 \x01(\v2\x14.kratos.api.MetaDataR\bmetadata\x12*\n" +
+	"\x06server\x18\x03 \x01(\v2\x12.kratos.api.ServerR\x06server\x120\n" +
+	"\bregistry\x18\x04 \x01(\v2\x14.kratos.api.RegistryR\bregistry\x12!\n" +
+	"\x03bbr\x18\x05 \x01(\v2\x0f.kratos.api.BBRR\x03bbr\x12$\n" +
+	"\x04otel\x18\x06 \x01(\v2\x10.kratos.api.OtelR\x04otel\x12!\n" +
+	"\x03log\x18\a \x01(\v2\x0f.kratos.api.LogR\x03log\x12$\n" +
+	"\x04data\x18\b \x01(\v2\x10.kratos.api.DataR\x04data\"d\n" +
+	"\bMetaData\x12\x12\n" +
+	"\x04Name\x18\x01 \x01(\tR\x04Name\x12\x18\n" +
+	"\aVersion\x18\x02 \x01(\tR\aVersion\x12\x1a\n" +
+	"\bConfPath\x18\x03 \x01(\tR\bConfPath\x12\x0e\n" +
+	"\x02Id\x18\x04 \x01(\tR\x02Id\"\x8c\x01\n" +
 	"\x03Log\x12\x1a\n" +
 	"\bfilepath\x18\x01 \x01(\tR\bfilepath\x12\x19\n" +
 	"\bmax_size\x18\x02 \x01(\x05R\amaxSize\x12\x1f\n" +
@@ -949,7 +1100,12 @@ const file_conf_conf_proto_rawDesc = "" +
 	"\x05Pprof\x12\x12\n" +
 	"\x04addr\x18\x01 \x01(\tR\x04addr\"&\n" +
 	"\bRegistry\x12\x1a\n" +
-	"\bendpoint\x18\x01 \x03(\tR\bendpoint\"\xd9\x01\n" +
+	"\bendpoint\x18\x01 \x03(\tR\bendpoint\"~\n" +
+	"\x03BBR\x12:\n" +
+	"\vwindow_size\x18\x01 \x01(\v2\x19.google.protobuf.DurationR\n" +
+	"windowSize\x12\x16\n" +
+	"\x06bucket\x18\x02 \x01(\x05R\x06bucket\x12#\n" +
+	"\rcpu_threshold\x18\x03 \x01(\x03R\fcpuThreshold\"\xd9\x01\n" +
 	"\x04Otel\x12,\n" +
 	"\x05trace\x18\x01 \x01(\v2\x16.kratos.api.Otel.TraceR\x05trace\x12/\n" +
 	"\x06metric\x18\x02 \x01(\v2\x17.kratos.api.Otel.MetricR\x06metric\x1a?\n" +
@@ -1004,54 +1160,59 @@ func file_conf_conf_proto_rawDescGZIP() []byte {
 }
 
 var file_conf_conf_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_conf_conf_proto_goTypes = []any{
 	(Environment)(0),            // 0: kratos.api.Environment
 	(*Bootstrap)(nil),           // 1: kratos.api.Bootstrap
-	(*Log)(nil),                 // 2: kratos.api.Log
-	(*Server)(nil),              // 3: kratos.api.Server
-	(*Registry)(nil),            // 4: kratos.api.Registry
-	(*Otel)(nil),                // 5: kratos.api.Otel
-	(*Data)(nil),                // 6: kratos.api.Data
-	(*Server_HTTP)(nil),         // 7: kratos.api.Server.HTTP
-	(*Server_GRPC)(nil),         // 8: kratos.api.Server.GRPC
-	(*Server_Pprof)(nil),        // 9: kratos.api.Server.Pprof
-	(*Otel_Trace)(nil),          // 10: kratos.api.Otel.Trace
-	(*Otel_Metric)(nil),         // 11: kratos.api.Otel.Metric
-	(*Data_Database)(nil),       // 12: kratos.api.Data.Database
-	(*Data_Redis)(nil),          // 13: kratos.api.Data.Redis
-	(*Data_Kafka)(nil),          // 14: kratos.api.Data.Kafka
-	nil,                         // 15: kratos.api.Data.DatabaseEntry
-	nil,                         // 16: kratos.api.Data.RedisEntry
-	(*durationpb.Duration)(nil), // 17: google.protobuf.Duration
+	(*MetaData)(nil),            // 2: kratos.api.MetaData
+	(*Log)(nil),                 // 3: kratos.api.Log
+	(*Server)(nil),              // 4: kratos.api.Server
+	(*Registry)(nil),            // 5: kratos.api.Registry
+	(*BBR)(nil),                 // 6: kratos.api.BBR
+	(*Otel)(nil),                // 7: kratos.api.Otel
+	(*Data)(nil),                // 8: kratos.api.Data
+	(*Server_HTTP)(nil),         // 9: kratos.api.Server.HTTP
+	(*Server_GRPC)(nil),         // 10: kratos.api.Server.GRPC
+	(*Server_Pprof)(nil),        // 11: kratos.api.Server.Pprof
+	(*Otel_Trace)(nil),          // 12: kratos.api.Otel.Trace
+	(*Otel_Metric)(nil),         // 13: kratos.api.Otel.Metric
+	(*Data_Database)(nil),       // 14: kratos.api.Data.Database
+	(*Data_Redis)(nil),          // 15: kratos.api.Data.Redis
+	(*Data_Kafka)(nil),          // 16: kratos.api.Data.Kafka
+	nil,                         // 17: kratos.api.Data.DatabaseEntry
+	nil,                         // 18: kratos.api.Data.RedisEntry
+	(*durationpb.Duration)(nil), // 19: google.protobuf.Duration
 }
 var file_conf_conf_proto_depIdxs = []int32{
 	0,  // 0: kratos.api.Bootstrap.env:type_name -> kratos.api.Environment
-	3,  // 1: kratos.api.Bootstrap.server:type_name -> kratos.api.Server
-	4,  // 2: kratos.api.Bootstrap.registry:type_name -> kratos.api.Registry
-	5,  // 3: kratos.api.Bootstrap.otel:type_name -> kratos.api.Otel
-	2,  // 4: kratos.api.Bootstrap.log:type_name -> kratos.api.Log
-	6,  // 5: kratos.api.Bootstrap.data:type_name -> kratos.api.Data
-	7,  // 6: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
-	8,  // 7: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
-	9,  // 8: kratos.api.Server.pprof:type_name -> kratos.api.Server.Pprof
-	10, // 9: kratos.api.Otel.trace:type_name -> kratos.api.Otel.Trace
-	11, // 10: kratos.api.Otel.metric:type_name -> kratos.api.Otel.Metric
-	15, // 11: kratos.api.Data.database:type_name -> kratos.api.Data.DatabaseEntry
-	16, // 12: kratos.api.Data.redis:type_name -> kratos.api.Data.RedisEntry
-	14, // 13: kratos.api.Data.kafka:type_name -> kratos.api.Data.Kafka
-	17, // 14: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
-	17, // 15: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	17, // 16: kratos.api.Data.Database.conn_max_lifetime:type_name -> google.protobuf.Duration
-	17, // 17: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	17, // 18: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	12, // 19: kratos.api.Data.DatabaseEntry.value:type_name -> kratos.api.Data.Database
-	13, // 20: kratos.api.Data.RedisEntry.value:type_name -> kratos.api.Data.Redis
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	2,  // 1: kratos.api.Bootstrap.metadata:type_name -> kratos.api.MetaData
+	4,  // 2: kratos.api.Bootstrap.server:type_name -> kratos.api.Server
+	5,  // 3: kratos.api.Bootstrap.registry:type_name -> kratos.api.Registry
+	6,  // 4: kratos.api.Bootstrap.bbr:type_name -> kratos.api.BBR
+	7,  // 5: kratos.api.Bootstrap.otel:type_name -> kratos.api.Otel
+	3,  // 6: kratos.api.Bootstrap.log:type_name -> kratos.api.Log
+	8,  // 7: kratos.api.Bootstrap.data:type_name -> kratos.api.Data
+	9,  // 8: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
+	10, // 9: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
+	11, // 10: kratos.api.Server.pprof:type_name -> kratos.api.Server.Pprof
+	19, // 11: kratos.api.BBR.window_size:type_name -> google.protobuf.Duration
+	12, // 12: kratos.api.Otel.trace:type_name -> kratos.api.Otel.Trace
+	13, // 13: kratos.api.Otel.metric:type_name -> kratos.api.Otel.Metric
+	17, // 14: kratos.api.Data.database:type_name -> kratos.api.Data.DatabaseEntry
+	18, // 15: kratos.api.Data.redis:type_name -> kratos.api.Data.RedisEntry
+	16, // 16: kratos.api.Data.kafka:type_name -> kratos.api.Data.Kafka
+	19, // 17: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
+	19, // 18: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	19, // 19: kratos.api.Data.Database.conn_max_lifetime:type_name -> google.protobuf.Duration
+	19, // 20: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	19, // 21: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	14, // 22: kratos.api.Data.DatabaseEntry.value:type_name -> kratos.api.Data.Database
+	15, // 23: kratos.api.Data.RedisEntry.value:type_name -> kratos.api.Data.Redis
+	24, // [24:24] is the sub-list for method output_type
+	24, // [24:24] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_conf_conf_proto_init() }
@@ -1065,7 +1226,7 @@ func file_conf_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_conf_proto_rawDesc), len(file_conf_conf_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   16,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

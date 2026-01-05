@@ -22,6 +22,11 @@ registry:
   endpoint:
     - etcd:2379
 
+bbr:
+  window_size: 1000
+  bucket: 1000
+  cpu_threshold: 1000
+
 otel:
   trace:
     endpoint: jaeger:4317
